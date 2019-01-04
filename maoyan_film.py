@@ -71,3 +71,7 @@ df = df[['rank','title','actor','score','location','release_time']]
 df.to_csv('./maoyan_top100_movie.csv',index=False)
 
 df.head()
+df['上映年份'] = df['release_time'].map(lambda x: int(x[:4]))
+df['上映年份'].value_counts()
+df['上映年份区间'] = pd.cut(df['上映年份'],bins=[1938,1980,1990,1995,2000,2005,2010,2015,2018])
+df['上映年份区间'].value_counts().sort_index().plot(kind='bar')
