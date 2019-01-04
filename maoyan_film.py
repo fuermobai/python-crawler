@@ -13,8 +13,13 @@ import pandas as pd
 import time
 import seaborn as sns
 sns.set()
-mpl.rcParams['font.sans-serif']=[u'SimHei']
-mpl.rcParams['axes.unicode_minus']=False
+#mpl.rcParams['font.wenquanyi']=[u'microhei']
+#mpl.rcParams['axes.unicode_minus']=False
+import matplotlib.pyplot as plt
+
+mpl.rcParams['font.family']='Source Han Sans CN'
+mpl.rcParams['font.sans-serif'] = ['Source Han Sans CN']
+mpl.rcParams['font.size'] = 9
 
 urls = ['http://maoyan.com/board/4?offset={0}'.format(i) for i in range(0,100,10)]
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
@@ -75,3 +80,16 @@ df['上映年份'] = df['release_time'].map(lambda x: int(x[:4]))
 df['上映年份'].value_counts()
 df['上映年份区间'] = pd.cut(df['上映年份'],bins=[1938,1980,1990,1995,2000,2005,2010,2015,2018])
 df['上映年份区间'].value_counts().sort_index().plot(kind='bar')
+df.iloc[df['上映年份'].idxmin()]
+df.iloc[df['上映年份'].idxmax()]
+df['location'].value_counts().plot(kind='bar')
+df.groupby('score')['title'].count().sort_index().plot(kind='bar')
+
+from collections import defaultdict
+actor_movie_cnt = defaultdict(int)
+
+for index,row in df.iterrows():
+    for actor in row['actor'].split(','):
+        actor_movie_cnt[actor] += 1
+        
+sorted(actor_movie_cnt.items(),key=lambda x: x[1], reverse=True)[:10]
